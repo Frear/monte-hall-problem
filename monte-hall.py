@@ -221,10 +221,15 @@ def main():
                 print("p2 {} receives a goat".format(p2.name))
     #end while
 
-    print("")
+    if announceEachGame:
+        print("")
     print("Whew. We have played {} games.".format(numGames))
-    print("p1 {} won {} prizes and {} goats".format(scorecard['p1'],scorecard['p1']['wins'],scorecard['p1']['goats']))
-    print("p2 {} won {} prizes and {} goats".format(scorecard['p2'],scorecard['p2']['wins'],scorecard['p2']['goats']))
+
+    p1winrate = 100*scorecard['p1']['wins']/numGames
+    p2winrate = 100*scorecard['p2']['wins']/numGames
+
+    print("p1 {} won {} prizes and {} goats for a {}% win rate".format(scorecard['p1'],scorecard['p1']['wins'],scorecard['p1']['goats'],p1winrate))
+    print("p2 {} won {} prizes and {} goats for a {}% win rate".format(scorecard['p2'],scorecard['p2']['wins'],scorecard['p2']['goats'],p2winrate))
 
     return
 
