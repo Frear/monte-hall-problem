@@ -124,9 +124,9 @@ class player:
 def parseargs():
     parser = argparse.ArgumentParser(description='Two players begin the monte hall problem...')
     parser.add_argument('-d', '--doors', dest='numDoors', type=int, default=3,
-                        help='Number of doors in the game')
+                        help='Number of doors in the game (default=3)')
     parser.add_argument('-g', '--games', dest='numGames', type=int, default=1,
-                        help='Number of times we play the game')
+                        help='Number of times we play the game (default=1)')
     parser.add_argument('-q', '--quiet', dest='announceEachGame', action='store_false',
                         help='Don\'t announce details of each game. (default=false)')
     parser.add_argument('-v', '--announceEachGame', dest='announceEachGame', default=True, action='store_true',
