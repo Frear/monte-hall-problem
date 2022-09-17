@@ -38,8 +38,70 @@ optional arguments:
 ```
 
 
-## Player 1 never changes their answer
-Three sample runs of 1000 games each with 100 doors:
+# Sample runs:
+
+## There are 3 doors and player 1 always changes their answer and we show all game details:
+```
+$ python ./monte-hall.py
+We are starting game 1! There are 3 closed doors
+Don't tell anyone, but the prize is behind door 3
+p1 = I am Alice, I always change my door selection, I have selected door 2, and I didn't change my selection
+All doors have been opened except 2 and 3
+p2 = I am Bob, I always change my door selection, I have selected door 2, and I didn't change my selection
+p1 = I am Alice, I always change my door selection, I have selected door 3, and I did change my selection
+p1 Alice wins a prize!
+p2 Bob receives a goat
+
+Whew. We have played 1 games.
+p1 {'wins': 1, 'goats': 0} won 1 prizes and 0 goats for a 100.0% win rate
+p2 {'wins': 0, 'goats': 1} won 0 prizes and 1 goats for a 0.0% win rate
+```
+
+## There are 3 doors and player 1 never changes their answer
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-never -q
+Whew. We have played 1000 games.
+p1 {'wins': 377, 'goats': 623} won 377 prizes and 623 goats for a 37.7% win rate
+p2 {'wins': 520, 'goats': 480} won 520 prizes and 480 goats for a 52.0% win rate
+```
+
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-never -q
+Whew. We have played 1000 games.
+p1 {'wins': 332, 'goats': 668} won 332 prizes and 668 goats for a 33.2% win rate
+p2 {'wins': 508, 'goats': 492} won 508 prizes and 492 goats for a 50.8% win rate
+```
+
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-never -q
+Whew. We have played 1000 games.
+p1 {'wins': 327, 'goats': 673} won 327 prizes and 673 goats for a 32.7% win rate
+p2 {'wins': 472, 'goats': 528} won 472 prizes and 528 goats for a 47.2% win rate
+```
+
+## There are 3 doors and player 1 always changes their answer
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-always -q
+Whew. We have played 1000 games.
+p1 {'wins': 677, 'goats': 323} won 677 prizes and 323 goats for a 67.7% win rate
+p2 {'wins': 539, 'goats': 461} won 539 prizes and 461 goats for a 53.9% win rate
+```
+
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-always -q
+Whew. We have played 1000 games.
+p1 {'wins': 652, 'goats': 348} won 652 prizes and 348 goats for a 65.2% win rate
+p2 {'wins': 524, 'goats': 476} won 524 prizes and 476 goats for a 52.4% win rate
+```
+
+```
+$ python ./monte-hall.py -g 1000 -d 3 --p1-always -q
+Whew. We have played 1000 games.
+p1 {'wins': 632, 'goats': 368} won 632 prizes and 368 goats for a 63.2% win rate
+p2 {'wins': 483, 'goats': 517} won 483 prizes and 517 goats for a 48.3% win rate
+```
+
+## There are 1000 doors and player 1 never changes their answer
 ```
 $ python ./monte-hall.py -g 1000 -d 100 --p1-never -q
 Whew. We have played 1000 games.
@@ -61,8 +123,7 @@ p1 {'wins': 10, 'goats': 990} won 10 prizes and 990 goats for a 1.0% win rate
 p2 {'wins': 477, 'goats': 523} won 477 prizes and 523 goats for a 47.7% win rate
 ```
 
-## Player 1 always changes their answer
-Three sample runs of 1000 games each with 100 doors:
+## There are 1000 doors and player 1 always changes their answer
 ```
 $ python ./monte-hall.py -g 1000 -d 100 --p1-always -q
 Whew. We have played 1000 games.
