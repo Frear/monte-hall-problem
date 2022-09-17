@@ -1,4 +1,4 @@
-from random import (Random, randint)
+from secrets import randbelow
 from uuid import uuid4
 
 class hall:
@@ -14,12 +14,11 @@ class hall:
     numDoors:int
     prizeDoor:int
     closedDoors:list
-    r:Random
+    #r:Random
 
     def __init__(self, numDoors:int = 3):
         self.numDoors = numDoors
-        self.r = Random()
-        self.prizeDoor = self.r.randint(1, numDoors)
+        self.prizeDoor = 1+randbelow(numDoors)
         self.closedDoors = [None, None]
     #end __init__
 
@@ -32,7 +31,7 @@ class hall:
         """
 
         # We flip a coin to decide if the prize door will be self.closedDoors[0] or [1]
-        if self.r.randint(1,2) == 1:
+        if randbelow(1) == 1:
             prizeDoorSlot = 0
             emptyDoorSlot = 1
         else:
@@ -42,7 +41,7 @@ class hall:
         self.closedDoors[prizeDoorSlot] = self.prizeDoor
         if playerSelectedDoor == self.prizeDoor:
             while self.closedDoors[emptyDoorSlot] == None or self.closedDoors[emptyDoorSlot] == self.prizeDoor:
-                self.closedDoors[emptyDoorSlot] = self.r.randint(1, self.numDoors-1)
+                self.closedDoors[emptyDoorSlot] = 1+randbelow(self.numDoors)
         else:
             self.closedDoors[emptyDoorSlot] = playerSelectedDoor
     #end revealDoors
@@ -58,10 +57,8 @@ class player:
     selectedDoor:int
     name:str
     alwaysSwitchDoors:bool
-    r:Random
 
     def __init__(self, numDoors:int, alwaysSwitchDoors:bool, name:str = None):
-        self.r = Random()
         self.numDoors = numDoors
         self.selectedDoor = None
         self.alwaysSwitchDoors = alwaysSwitchDoors
@@ -89,13 +86,13 @@ class player:
         if closedDoors[0] == None and closedDoors[1] == None:
             # If all doors are closed, we select a random door
             if self.alwaysSwitchDoors or self.selectedDoor == None :
-                self.selectedDoor = self.r.randint(1, self.numDoors)
+                self.selectedDoor = 1+randbelow(self.numDoors)
                 changedDoor = True
         else:
             # If only 2 doors are closed...
             if self.selectedDoor == None:
                 # If we haven't previously selected a door, we pick randomly between 2 closed doors
-                if self.r.randint(1,2) == 1:
+                if randbelow(1) == 1:
                     self.selectedDoor = closedDoors[0]
                 else:
                     self.selectedDoor = closedDoors[1]
@@ -128,7 +125,6 @@ def main():
     numDoors = 100
     numGames = 2
 
-    h = hall(numDoors)
     scorecard = {}
     gameNum=0
     while gameNum < numGames:
@@ -137,6 +133,9 @@ def main():
         if gameNum > 1:
             print("")
         print("We are starting game {}! There are {} closed doors".format(gameNum, numDoors))
+
+        h = hall(numDoors)
+        print("Don't tell anyone, but the prize is behind door {}".format(h.prizeDoor))
 
         p1 = player(numDoors, name="Player 1", alwaysSwitchDoors=True)
         #p1 = player(numDoors, alwaysSwitchDoors=True)
