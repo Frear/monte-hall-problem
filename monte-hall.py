@@ -117,7 +117,7 @@ class player:
                     self.switchedDoors = False
         return self.switchedDoors
     #end selectDoor
-#end class player:
+#end class player
 
 def parseargs():
     parser = argparse.ArgumentParser(description='Two players begin the monte hall problem...')
