@@ -1,5 +1,5 @@
 from secrets import randbelow
-from uuid import uuid4
+import argparse
 
 class hall:
     """
@@ -31,7 +31,7 @@ class hall:
         """
 
         # We flip a coin to decide if the prize door will be self.closedDoors[0] or [1]
-        if randbelow(1) == 1:
+        if randbelow(2) == 1:
             prizeDoorSlot = 0
             emptyDoorSlot = 1
         else:
@@ -57,15 +57,14 @@ class player:
     selectedDoor:int
     name:str
     alwaysSwitchDoors:bool
+    switchedDoors:bool
 
-    def __init__(self, numDoors:int, alwaysSwitchDoors:bool, name:str = None):
+    def __init__(self, numDoors:int, alwaysSwitchDoors:bool, name:str):
         self.numDoors = numDoors
         self.selectedDoor = None
         self.alwaysSwitchDoors = alwaysSwitchDoors
-        if name == None:
-            self.name = uuid4()
-        else:
-            self.name = name
+        self.name = name
+        self.switchedDoors = None
     #end __init__
 
     def __repr__(self) -> str:
@@ -77,37 +76,77 @@ class player:
             changeStr = "always"
         else:
             changeStr = "never"
-        return "I am {}, I {} change my door selection, and I have selected {}".format(self.name, changeStr, doorStr)
+        if self.switchedDoors == None:
+            switchedStr = "couldn\'t change"
+        elif self.switchedDoors:
+            switchedStr = "did"
+        else:
+            switchedStr = "didn\'t"
+        return "I am {}, I {} change my door selection, I have selected {}, and I {} change my selection".format(self.name, changeStr, doorStr, switchedStr)
     #end __repr__
 
 
     def selectDoor(self, closedDoors:list = [None, None]) -> bool:
-        changedDoor = False
         if closedDoors[0] == None and closedDoors[1] == None:
             # If all doors are closed, we select a random door
-            if self.alwaysSwitchDoors or self.selectedDoor == None :
+            if self.alwaysSwitchDoors or self.selectedDoor == None:
+                if self.selectedDoor == None:
+                    self.switchedDoors = False
+                else:
+                    self.switchedDoors = True
                 self.selectedDoor = 1+randbelow(self.numDoors)
-                changedDoor = True
+            else:
+                self.switchedDoors = False
         else:
             # If only 2 doors are closed...
             if self.selectedDoor == None:
                 # If we haven't previously selected a door, we pick randomly between 2 closed doors
-                if randbelow(1) == 1:
+                if randbelow(2) == 1:
                     self.selectedDoor = closedDoors[0]
                 else:
                     self.selectedDoor = closedDoors[1]
-                changedDoor = True
-            elif self.alwaysSwitchDoors:
-                # If we've previously selected a door and now only 2 are open, pick the other door
-                if self.selectedDoor == closedDoors[0]:
-                    self.selectedDoor = closedDoors[1]
-                elif self.selectedDoor == closedDoors[1]:
-                    self.selectedDoor = closedDoors[0]
+                self.switchedDoors = False
+            else:
+                if self.alwaysSwitchDoors:
+                    # If we've previously selected a door and now only 2 are open, pick the other door
+                    if self.selectedDoor == closedDoors[0]:
+                        self.selectedDoor = closedDoors[1]
+                    elif self.selectedDoor == closedDoors[1]:
+                        self.selectedDoor = closedDoors[0]
+                    else:
+                        raise("Unpossible! I selected door {} but only doors {} and {} are closed!".format(self.selectedDoor, closedDoors[0], closedDoors[1]))
+                    self.switchedDoors = True
                 else:
-                    raise("Unpossible! I selected door {} but only doors {} and {} are closed!".format(self.selectedDoor, closedDoors[0], closedDoors[1]))
-                changedDoor = True
-        return changedDoor
+                    self.switchedDoors = False
+        return self.switchedDoors
     #end selectDoor
+
+def parseargs():
+    parser = argparse.ArgumentParser(description='Two players begin the monte hall problem...')
+    parser.add_argument('-d', '--doors', dest='numDoors', type=int, default=3,
+                        help='Number of doors in the game')
+    parser.add_argument('-g', '--games', dest='numGames', type=int, default=1,
+                        help='Number of times we play the game')
+    parser.add_argument('-q', '--quiet', dest='announceEachGame', action='store_false',
+                        help='Don\'t announce details of each game. (default=false)')
+    parser.add_argument('-v', '--announceEachGame', dest='announceEachGame', default=True, action='store_true',
+                        help='Announce details of each game? (default=true)')
+
+    parser.add_argument('--p1-name', dest='p1name', type=str, default='Alice',
+                        help='Player 1\'s name')
+    parser.add_argument('--p1-always', dest='p1changes', action='store_true', default=True,
+                        help='Player 1 always changes their selection (default=true)')
+    parser.add_argument('--p1-never', dest='p1changes', action='store_false',
+                        help='Player 1 never changes their selection (default=false)')
+
+    parser.add_argument('--p2-name', dest='p2name', type=str, default='Bob',
+                        help='Player 2\'s name')
+    parser.add_argument('--p2-always', dest='p2changes', action='store_true', default=True,
+                        help='Player 2 always changes their selection (default=true)')
+    parser.add_argument('--p2-never', dest='p2changes', action='store_false',
+                        help='Player 2 never changes their selection (default=false)')
+
+    return parser.parse_args()
 
 def main():
     """
@@ -122,59 +161,70 @@ def main():
         wins and losses are tracked
     """
 
-    numDoors = 100
-    numGames = 2
+    args = parseargs()
+
+    numDoors = args.numDoors
+    numGames = args.numGames
+    announceEachGame = args.announceEachGame
 
     scorecard = {}
     gameNum=0
     while gameNum < numGames:
         gameNum = gameNum+1
 
-        if gameNum > 1:
-            print("")
-        print("We are starting game {}! There are {} closed doors".format(gameNum, numDoors))
+        if announceEachGame:
+            if gameNum > 1:
+                print("")
+            print("We are starting game {}! There are {} closed doors".format(gameNum, numDoors))
 
         h = hall(numDoors)
-        print("Don't tell anyone, but the prize is behind door {}".format(h.prizeDoor))
+        if announceEachGame:
+            print("Don't tell anyone, but the prize is behind door {}".format(h.prizeDoor))
 
-        p1 = player(numDoors, name="Player 1", alwaysSwitchDoors=True)
-        #p1 = player(numDoors, alwaysSwitchDoors=True)
-        if scorecard.get(p1.name) == None:
-            scorecard[p1.name] = { "wins":0, "goats":0}
+        p1 = player(numDoors, name=args.p1name, alwaysSwitchDoors=args.p1changes)
+        if scorecard.get('p1') == None:
+            scorecard['p1'] = {"wins":0, "goats":0}
         p1.selectDoor(closedDoors=h.closedDoors)
-        print("p1 = {}".format(p1))
+        if announceEachGame:
+            print("p1 = {}".format(p1))
         h.revealDoors(p1.selectedDoor)
-        print("All doors have been opened except {} and {}".format(h.closedDoors[0],h.closedDoors[1]))
+        if announceEachGame:
+            print("All doors have been opened except {} and {}".format(h.closedDoors[0],h.closedDoors[1]))
 
-        p2 = player(numDoors, name="Player 2", alwaysSwitchDoors=True)
-        #p2 = player(numDoors, alwaysSwitchDoors=True)
-        if scorecard.get(p2.name) == None:
-            scorecard[p2.name] = { "wins":0, "goats":0}
+        p2 = player(numDoors, name=args.p2name, alwaysSwitchDoors=args.p2changes)
+        if scorecard.get('p2') == None:
+            scorecard['p2'] = {"wins":0, "goats":0}
         p2.selectDoor(closedDoors=h.closedDoors)
-        print("p2 = {}".format(p2))
+        if announceEachGame:
+            print("p2 = {}".format(p2))
 
         p1.selectDoor(closedDoors=h.closedDoors)
-        print("p1 = {}".format(p1))
+        if announceEachGame:
+            print("p1 = {}".format(p1))
 
         if p1.selectedDoor == h.prizeDoor:
-            scorecard[p1.name]['wins'] = scorecard[p1.name]['wins']+1
-            print("p1 {} wins a prize!".format(p1.name))
+            scorecard['p1']['wins'] = scorecard['p1']['wins']+1
+            if announceEachGame:
+                print("p1 {} wins a prize!".format(p1.name))
         else:
-            scorecard[p1.name]['goats'] = scorecard[p1.name]['goats']+1
-            print("p1 {} receives a goat".format(p1.name))
+            scorecard['p1']['goats'] = scorecard['p1']['goats']+1
+            if announceEachGame:
+                print("p1 {} receives a goat".format(p1.name))
 
         if p2.selectedDoor == h.prizeDoor:
-            scorecard[p2.name]['wins'] = scorecard[p2.name]['wins']+1
-            print("p2 {} wins a prize!".format(p2.name))
+            scorecard['p2']['wins'] = scorecard['p2']['wins']+1
+            if announceEachGame:
+                print("p2 {} wins a prize!".format(p2.name))
         else:
-            scorecard[p2.name]['goats'] = scorecard[p2.name]['goats']+1
-            print("p2 {} receives a goat".format(p2.name))
+            scorecard['p2']['goats'] = scorecard['p2']['goats']+1
+            if announceEachGame:
+                print("p2 {} receives a goat".format(p2.name))
     #end while
 
     print("")
     print("Whew. We have played {} games.".format(numGames))
-    print("{} won {} prizes and {} goats".format(scorecard[p1.name],scorecard[p1.name]['wins'],scorecard[p1.name]['goats']))
-    print("{} won {} prizes and {} goats".format(scorecard[p2.name],scorecard[p2.name]['wins'],scorecard[p2.name]['goats']))
+    print("p1 {} won {} prizes and {} goats".format(scorecard['p1'],scorecard['p1']['wins'],scorecard['p1']['goats']))
+    print("p2 {} won {} prizes and {} goats".format(scorecard['p2'],scorecard['p2']['wins'],scorecard['p2']['goats']))
 
     return
 
