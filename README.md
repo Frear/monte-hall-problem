@@ -3,7 +3,7 @@ This program plays the [monte-hall problem](https://en.wikipedia.org/wiki/Monty_
 
 It has a variation on how the game is played.
 
-Normally, a player (p1) selects a door in hops of finding a prize.
+Normally, a player (p1) selects a door in hopes of finding a prize.
 After they make their selection, all doors are opened except the door they selected and door with the prize.
 The player is offered the ability to change their answer.
 
