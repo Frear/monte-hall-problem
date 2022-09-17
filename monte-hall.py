@@ -5,16 +5,13 @@ class hall:
     """
     Imagine a hall with doors numbered from 1 to numDoors.
 
-    Behind all of them is an empty closet, except there is a prize behind the
+    Behind all of them is goat, except there is a prize behind the
     door numbered prizeDoor.
-
-    In roundOne, a door is chosen.
     """
 
     numDoors:int
     prizeDoor:int
     closedDoors:list
-    #r:Random
 
     def __init__(self, numDoors:int = 3):
         self.numDoors = numDoors
