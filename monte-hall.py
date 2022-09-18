@@ -109,13 +109,9 @@ class player:
         if closedDoors[0] == None and closedDoors[1] == None:
             # If all doors are closed, we select a random door
             if self.alwaysSwitchDoors or self.selectedDoor == None:
-                if self.selectedDoor == None:
-                    self.switchedDoors = False
-                else:
+                if self.selectedDoor != None:
                     self.switchedDoors = True
                 self.selectedDoor = 1+randbelow(self.numDoors)
-            else:
-                self.switchedDoors = False
         else:
             # If only 2 doors are closed...
             if self.selectedDoor == None:
@@ -124,7 +120,6 @@ class player:
                     self.selectedDoor = closedDoors[0]
                 else:
                     self.selectedDoor = closedDoors[1]
-                self.switchedDoors = False
             else:
                 if self.alwaysSwitchDoors:
                     # If we've previously selected a door and now only 2 are open, pick the other door

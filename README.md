@@ -43,18 +43,18 @@ optional arguments:
 $ python ./monte-hall.py --games 2
 Host: We are starting game 1! There are 3 closed doors
 Host: Don't tell anyone, but the prize is behind door 2
-Alice: I always change my door selection, I have selected door 3, and I didn't change my selection
+Alice: I always change my door selection, I have selected door 3, and I couldn't change my selection
 Host: All doors have been opened except 3 and 2
-Bob: I never change my door selection, I have selected door 3, and I didn't change my selection
+Bob: I never change my door selection, I have selected door 3, and I couldn't change my selection
 Alice: I always change my door selection, I have selected door 2, and I did change my selection
 Alice wins a prize!
 Bob receives a goat
 
 Host: We are starting game 2! There are 3 closed doors
 Host: Don't tell anyone, but the prize is behind door 1
-Alice: I always change my door selection, I have selected door 1, and I didn't change my selection
+Alice: I always change my door selection, I have selected door 1, and I couldn't change my selection
 Host: All doors have been opened except 1 and 2
-Bob: I never change my door selection, I have selected door 1, and I didn't change my selection
+Bob: I never change my door selection, I have selected door 1, and I couldn't change my selection
 Alice: I always change my door selection, I have selected door 2, and I did change my selection
 Alice receives a goat
 Bob wins a prize!
