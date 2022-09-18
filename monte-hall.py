@@ -87,7 +87,9 @@ class player:
     #end __init__
 
     def __repr__(self) -> str:
-        if self.alwaysSwitchDoors:
+        if self.alwaysSwitchDoors == None:
+            changeStr = "can\'t"
+        elif self.alwaysSwitchDoors:
             changeStr = "always"
         else:
             changeStr = "never"
